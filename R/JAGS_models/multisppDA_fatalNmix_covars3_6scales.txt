@@ -1,0 +1,81 @@
+                             
+    model {
+    
+    ##** theta(forest) lambda(deltaBurn+tanque) p(.)
+    ## random intercepts in all parameters but p
+    ## random slopes in forest
+    
+    ##* Priors -----
+    
+    #* Species data augmentation
+    theta ~ dunif(0,1) # inclusion parameter
+    
+    #* Zero-inflation
+    mu.delta0 ~ dnorm(0,0.01)
+    sd.delta0 ~ dunif(0,3)
+    tau.delta0 <- 1/(sd.delta0^2)
+    
+    mu.delta1 ~ dnorm(0,0.01) # mean effect of forest
+    sd.delta1 ~ dunif(0,3)    
+    tau.delta1 <- 1/(sd.delta1^2)
+    
+    scale_for ~ dcat(c(1,1,1,1,1,1)) # scale effect for 6 buffers of forest
+    
+    #* Local abundance
+    mu.alpha0 ~ dnorm(0,0.01)
+    sd.alpha0 ~ dunif(0,3)
+    tau.alpha0 <- 1/(sd.alpha0^2)
+    
+    alpha1 ~ dnorm(0,0.01) # effect of deltaBurn
+    
+    alpha2 ~ dnorm(0,0.01) # effect of tanque
+    
+    #* Detecion
+    mean.p ~ dunif(0,1)
+
+    ##* Hyper-paramaters
+    for(k in 1:n.spp){
+      delta0[k] ~ dnorm(mu.delta0, tau.delta0) # random intercepts
+      delta1[k] ~ dnorm(mu.delta1, tau.delta1) # random slopes of forest
+      
+      alpha0[k] ~ dnorm(mu.alpha0, tau.alpha0) # random intercepts
+      
+      ##* Likelihood -----
+      
+      w[k] ~ dbern(theta) # species inclusion process for DA
+      
+      for(i in 1:S){
+        #* Zero-inflation
+        a[i,k] ~ dbern(psi[i,k]*w[k])
+        logit(psi[i,k]) <- delta0[k] + delta1[k]*forest[i,scale_for]
+        
+        #* Local abundance (fatality)
+        N[i,k] ~ dpois(lambda[i,k]*a[i,k])
+        log(lambda[i,k]) <- alpha0[k] + alpha1*deltaBurn[i] + alpha2*tanque[i]
+        
+        # Compute presence/absence matrix z (for N > 0) from latent abundance
+        z[i,k] <- step(N[i,k]-1) # returns TRUE if N >= 1
+        
+        #* Conditional multinomial
+        p[i,k] <- mean.p
+        
+        pi[i,1,k] <- p[i,k] # 1st observer
+        pi[i,2,k] <- (1-p[i,k])*p[i,k] # 2nd observer
+        pi0[i,k] <- 1 - pi[i,1,k] - pi[i,2,k] # prob. of non-detection
+        pcap[i,k] <- 1 - pi0[i,k] # prob. of at least one observer to detect
+        
+        pic[i,1,k] <- pi[i,1,k] / pcap[i,k] # conditional prob.1
+        pic[i,2,k] <- pi[i,2,k] / pcap[i,k] # conditional prob.2
+        
+        #* Observation process
+        ncap[i,k] ~ dbin(pcap[i,k],N[i,k])
+        Y[i,1:2,k] ~ dmulti(pic[i,1:2,k],ncap[i,k])
+        
+      } #i
+    } #k
+
+    ##* Derived quantities
+    
+    
+    } #model
+        
