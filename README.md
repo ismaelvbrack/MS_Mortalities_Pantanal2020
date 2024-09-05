@@ -13,14 +13,14 @@ This repository contains data and code scripts for the manuscript "*Spatial mode
     -   `Fig.Psi_Coefs_Forest.png`: Slope coefficient of the effect of non-flooded forests in the suitability of carcasses for the entire community and for the evaluated taxa.
     -   `Fig.Psi-Forest.png`: Relationship of suitability of carcasses with the proportion of non-flooded forests. Community average relationship with 95%CI shadow in green, and mean relationship for each taxa.
 
-- `ms`: manuscript files used in the submission
+-   `ms/`: manuscript files used in the submission
   
-- `outputs`: output objects from models fitted in JAGS  
+-   `outputs/`: output objects from models fitted in JAGS  
 
--  `R`: R code scripts
-    - `JAGS_models/`: folder containing JAGS models.
-        - `multisppDA_fatalNmix_covars3_6scales.txt`: selected model: psi(forest) lambda(deltaBurn+tanque) p(.)
-        - `multisppDA_fatalNmix_covars3_6scales.txt`: full model: psi(forest+dist2wiw) lambda(deltaBurn+tanque) p(greenVeg)
-    - `figures_relationship predictions.R`: code to make the figures
-    - `results_coefficient estimates.R`: code to see model results
-    - `run_multispp ZIP Nmix carcass.R`: code to import, arrange, and analyze data using JAGS
+-    `R/`: R code scripts
+    -   `JAGS_models/`: folder containing JAGS models.
+        -   `multisppDA_fatalNmix_covars3_6scales.txt`: selected model: psi(forest) lambda(deltaBurn+tanque) p(.)
+        -   `multisppDA_fatalNmix_covars3_6scales.txt`: full model: psi(forest+dist2wiw) lambda(deltaBurn+tanque) p(greenVeg)
+    -   `figures_relationship predictions.R`: code to make the figures
+    -   `results_coefficient estimates.R`: code to see model results
+    -   `run_multispp ZIP Nmix carcass.R`: code to import, arrange, and analyze data using JAGS
