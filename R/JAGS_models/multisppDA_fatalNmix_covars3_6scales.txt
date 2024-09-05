@@ -1,7 +1,7 @@
                              
     model {
     
-    ##** theta(forest) lambda(deltaBurn+tanque) p(.)
+    ##** psi(forest) lambda(deltaBurn+tanque) p(.)
     ## random intercepts in all parameters but p
     ## random slopes in forest
     

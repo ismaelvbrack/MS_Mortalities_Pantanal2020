@@ -1,7 +1,7 @@
                              
     model {
     
-    ##** theta(forest+dist2wiw) lambda(deltaBurn+tanque) p(greenVeg)
+    ##** psi(forest+dist2wiw) lambda(deltaBurn+tanque) p(greenVeg)
     ## random intercepts in all parameters
     ## random slopes in forest and dist2wiw
     
