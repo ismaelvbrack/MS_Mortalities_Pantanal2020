@@ -17,10 +17,16 @@ This repository contains data and code scripts for the manuscript "*Spatial mode
   
 -   `outputs/`: output objects from models fitted in JAGS  
 
+-   `R/`: R code scripts
+    - `JAGS_models/`: folder containing JAGS models (selected and full).
+    - `figures_relationship predictions.R`: code to make the figures
+    - `results_coefficient estimates.R`: code to see model results
+    - `run_multispp ZIP Nmix carcass.R`: code to import, arrange, and analyze data using JAGS
+
 -    `R/`: R code scripts.
-    -	`JAGS_models/`: folder containing JAGS models.
-         -	`multisppDA_fatalNmix_covars3_6scales.txt`: selected model: psi(forest) lambda(deltaBurn+tanque) p(.)
-         -	`multisppDA_fatalNmix_covars3_6scales.txt`: full model: psi(forest+dist2wiw) lambda(deltaBurn+tanque) p(greenVeg)
+        -    `JAGS_models/`: folder containing JAGS models.
+        -    `multisppDA_fatalNmix_covars3_6scales.txt`: selected model: psi(forest) lambda(deltaBurn+tanque) p(.)
+        -    `multisppDA_fatalNmix_covars3_6scales.txt`: full model: psi(forest+dist2wiw) lambda(deltaBurn+tanque) p(greenVeg)
     -	`figures_relationship predictions.R`: code to make the figures
     -	`results_coefficient estimates.R`: code to see model results
     -	`run_multispp ZIP Nmix carcass.R`: code to import, arrange, and analyze data using JAGS
