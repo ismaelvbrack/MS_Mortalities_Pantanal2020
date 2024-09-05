@@ -40,29 +40,59 @@ pred.thetaFor.sp$forest1000 <- pred.thetaFor.sp$forest1000*
 # exclude not-detected species
 pred.thetaFor.sp <- pred.thetaFor.sp[pred.thetaFor.sp$taxa %in% names(which(colSums(ncap)>0)),]
 
+
 #* Figure!
-fig.psi.for1000 <- ggplot(data=pred.thetaFor.sp,aes(x=forest1000,y=est,group=taxa,label=taxa)) + 
-  geom_line(col="gray40",size=1,alpha=0.4) +
+signifs <- data.frame(est1=tapply(pred.thetaFor.sp$est,pred.thetaFor.sp$taxa,function(x) x[100]),
+           taxa=unique(pred.thetaFor.sp$taxa),
+           signif=!out$overlap0$delta1[colSums(ncap)>0],
+           cols="gray")
+signifs[which(signifs$taxa=="Bladic"),"signif"] <- FALSE
+
+signifs[which(signifs$signif==1),"cols"] <- rep(c("red3","orange"),ceiling(sum(signifs$signif==1)/2))
+signifs[which(signifs$taxa=="Nasnas"),"cols"] <- "red3"
+
+fig.psi.for1000 <- 
+  ggplot(data=pred.thetaFor.sp,aes(x=forest1000,y=est,group=taxa,label=taxa,col=taxa)) + 
+  geom_line(size=1,alpha=0.6) +
   theme(axis.title=element_text(size=18),axis.text=element_text(size=16),plot.margin=margin(20,80,20,20)) + # plot.margin=margin(20,40,20,20)
   theme_classic() + #coord_cartesian(ylim=c(0,100)) +
   labs(x="% of non-flooded forests (1km buffer)",y="Prob. of carcass suitability (\U03A8)") +
   scale_x_continuous(breaks=seq(.1,.9,0.2),labels=seq(10,90,20),expand=c(0,0.1)) +
   scale_y_continuous(limits=c(0,1),breaks=seq(0,1,.2)) +
+  scale_color_manual(values=signifs$cols) +
   geom_line(data=pred.thetaFor.multi, aes(x=forest1000,y=median),
             size=1.6,color="darkgreen",inherit.aes=F) +
   geom_ribbon(data=pred.thetaFor.multi, aes(x=forest1000,y=median,ymax=upper,ymin=lower),
-              alpha=0.4, fill="darkgreen",inherit.aes=F) +
-  geom_text_repel(data=data.frame(est1=tapply(pred.thetaFor.sp$est,pred.thetaFor.sp$taxa,function(x) x[100]),
-                                  taxa=unique(pred.thetaFor.sp$taxa),
-                                  signif=!out$overlap0$delta1[colSums(ncap)>0]
-  ),
-  aes(x=rep(1,sum(colSums(ncap)>0)),y=est1,label=taxa),inherit.aes=F,
-  fontface=ifelse(out$overlap0$delta1[colSums(ncap)>0],"plain","bold"),
-  nudge_x=.2,direction="y",hjust="right",
-  col=ifelse(out$overlap0$delta1[colSums(ncap)>0],"gray50","black"),
-  segment.size=.3,segment.alpha=.7,size=4,
-  box.padding=.4) +
-  theme(axis.text=element_text(size=14),axis.title=element_text(size=16,face="bold"))
+              alpha=0.3, fill="darkgreen",inherit.aes=F) +
+  geom_text_repel(data=signifs,
+                  aes(x=rep(1,sum(colSums(ncap)>0)),y=est1,label=taxa),inherit.aes=F,
+                  fontface=ifelse(signifs$signif==FALSE,"plain","bold"),
+                  nudge_x=.2,direction="y",hjust="right",
+                  col=signifs$cols,#ifelse(out$overlap0$delta1[colSums(ncap)>0],"gray50","black"),
+                  segment.size=.3,segment.alpha=.7,size=5,
+                  box.padding=.4) +
+  theme(legend.position="none",axis.text=element_text(size=14),axis.title=element_text(size=16,face="bold"))
+
+
+ # ggplot(data=pred.thetaFor.sp,aes(x=forest1000,y=est,group=taxa,label=taxa)) + 
+ #  geom_line(col="gray40",size=1,alpha=0.4) +
+ #  theme(axis.title=element_text(size=18),axis.text=element_text(size=16),plot.margin=margin(20,80,20,20)) + # plot.margin=margin(20,40,20,20)
+ #  theme_classic() + #coord_cartesian(ylim=c(0,100)) +
+ #  labs(x="% of non-flooded forests (1km buffer)",y="Prob. of carcass suitability (\U03A8)") +
+ #  scale_x_continuous(breaks=seq(.1,.9,0.2),labels=seq(10,90,20),expand=c(0,0.1)) +
+ #  scale_y_continuous(limits=c(0,1),breaks=seq(0,1,.2)) +
+ #  geom_line(data=pred.thetaFor.multi, aes(x=forest1000,y=median),
+ #            size=1.6,color="darkgreen",inherit.aes=F) +
+ #  geom_ribbon(data=pred.thetaFor.multi, aes(x=forest1000,y=median,ymax=upper,ymin=lower),
+ #              alpha=0.4, fill="darkgreen",inherit.aes=F) +
+ #  geom_text_repel(data=,
+ #  aes(x=rep(1,sum(colSums(ncap)>0)),y=est1,label=taxa),inherit.aes=F,
+ #  fontface=ifelse(out$overlap0$delta1[colSums(ncap)>0],"plain","bold"),
+ #  nudge_x=.2,direction="y",hjust="right",
+ #  col=ifelse(out$overlap0$delta1[colSums(ncap)>0],"gray50","black"),
+ #  segment.size=.3,segment.alpha=.7,size=4,
+ #  box.padding=.4) +
+ #  theme(axis.text=element_text(size=14),axis.title=element_text(size=16,face="bold"))
 
 ggsave(here::here("figs","Fig.Psi-Forest.png"),fig.psi.for1000,
        width=18,height=16,units="cm",dpi=320)
